@@ -10,15 +10,20 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                        /opt/sonar-scanner-7.1.0.4889-linux-x64/bin/sonar-scanner \
-                          -Dsonar.projectKey=devops-demo \
-                          -Dsonar.projectName=devops-demo \
-                          -Dsonar.sources=. \
-                    '''
+                script {
+                    def scannerHome = tool 'SonarScanner'
+
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            "\${scannerHome}/bin/sonar-scanner" \
+                            -Dsonar.projectKey=devops-demo \
+                            -Dsonar.projectName=devops-demo \
+                            -Dsonar.sources=. \
+                            -Dsonar.sourceEncoding=UTF-8
+                        """
+                    }
                 }
             }
-        }
-    }
+       }
+   }
 }
